@@ -1,0 +1,5 @@
+mpi4py>=3.1
+numpy>=1.24
+pandas>=2.0
+matplotlib>=3.5
+openfast_toolbox @ git+https://github.com/cibeah/openfast_toolbox@d2eb063e3fcf00a3c50e952248e355b0f19be588

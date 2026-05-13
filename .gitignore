@@ -1,0 +1,14 @@
+# FAST.Farm binaries - large executables, not tracked in git
+*.exe
+
+# Claude Code local settings
+.claude/
+CLAUDE.md 
+
+# VS Code setting
+.vscode
+
+# Simulation result
+__simul__/
+*.egg-info/
+__pycache__/
