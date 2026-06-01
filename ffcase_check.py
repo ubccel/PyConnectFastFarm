@@ -28,7 +28,7 @@ ALIGN_TOL        = 0.02   # max fractional deviation from integer for alignment 
 def check_case(fstf_path: str,
                D: float = 126.0,
                hub_height: float = 90.0,
-               U: float = 9.93) -> dict:
+               U: float = 10.0) -> dict:
     """
     Read one .fstf file and run all parameter checks.
 
@@ -37,7 +37,7 @@ def check_case(fstf_path: str,
     fstf_path   : path to FAST.Farm .fstf input file
     D           : rotor diameter (m)          default = 126 m  (NREL 5MW)
     hub_height  : hub height above MSL (m)    default = 90 m   (NREL 5MW / OC4 semi-sub)
-    U           : mean hub-height wind speed  default = 9.93 m/s
+    U           : mean hub-height wind speed  default = 10.0 m/s
 
     Returns
     -------
@@ -168,7 +168,8 @@ def check_case(fstf_path: str,
     # NumPlanes sufficiency
     max_sep = max(xWT) - min(xWT)
     if max_sep > 0:
-        np_min = math.ceil(max_sep / (U * DT_Low)) * SAFETY_NUMPLANES
+        U_average = U * (1 - 0.33/2) # average velocity in wake-meandering region (assumes 33% deficit at rotor)
+        np_min = math.ceil(max_sep / (U_average * DT_Low)) * SAFETY_NUMPLANES
         status = "PASS" if NumPlanes >= np_min else "FAIL"
     else:
         np_min = 0
@@ -176,7 +177,7 @@ def check_case(fstf_path: str,
     results["NumPlanes"] = (
         status, NumPlanes, np_min,
         f"actual={NumPlanes}, need>={np_min:.1f}  "
-        f"[sep={max_sep:.0f} m, U={U} m/s, DT_Low={DT_Low} s]",
+        f"[sep={max_sep:.0f} m, U_deficit={U_average} m/s, DT_Low={DT_Low} s]",
     )
     # NumRadii must reach rotor tip
     NumRadii_min = 3*D / (2*dr) + 1
