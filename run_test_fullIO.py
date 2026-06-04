@@ -56,30 +56,12 @@ results = []
 done = False
 
 for t in range(max_iter):
-    if t >= activate_step:
-        interface.set_command(
-            yaw=yaw_schedule[t],
-            ipc=None,
-            torque=None, # torque_schedule[t] if torque_schedule[t] > 0 else None
-            turb_idx=0,
-        )
-        interface.set_command(
-            yaw=yaw_schedule[t] * -1,
-            ipc=None,
-            torque=None,
-            turb_idx=1,
-        )
-        # This is only for testing (known that only maximal 3 turbines)
-        if n_turbines > 2:
-            interface.set_command(
-                yaw=None,
-                ipc=None,
-                torque=None,
-                turb_idx=2,
-            )
+    # Advance one step FIRST, then read the freshly computed measures.
+    # current_measures is only populated inside step(), so stepping first
+    # guarantees a valid (non-NaN) read — no spin-up NaN to filter around.
     done = interface.step()
 
-    step_result = {"t": t * dt}
+    step_result = {"t": (t + 1) * dt}
     total_power = 0.0
     for i in range(n_turbines):
         # --- Variables shared with More variant ---
@@ -214,18 +196,41 @@ for t in range(max_iter):
 
     results.append(step_result)
     if print_result:
-        if t >= activate_step:
+        if t + 1 >= activate_step:
             print(
-                f"t={t*dt:6.1f}s  power={total_power/1e6:.3f} MW  "
+                f"t={(t+1)*dt:6.1f}s  power={total_power/1e6:.3f} MW  "
                 f"pitch_T0=[{step_result['pitch_b1_T0']:.2f}, "
                 f"{step_result['pitch_b2_T0']:.2f}, "
                 f"{step_result['pitch_b3_T0']:.2f}] deg"
             )
         else:
-            print(f"t={t*dt:6.1f}s  power={total_power/1e6:.3f} MW  (warmup)")
+            print(f"t={(t+1)*dt:6.1f}s  power={total_power/1e6:.3f} MW  (warmup)")
 
     if done:
         break
+
+    # Buffer commands for the NEXT step() — consumed on the following iteration
+    if t + 1 >= activate_step:
+        interface.set_command(
+            yaw=yaw_schedule[t + 1],
+            ipc=None,
+            torque=None,
+            turb_idx=0,
+        )
+        interface.set_command(
+            yaw=yaw_schedule[t + 1] * -1,
+            ipc=None,
+            torque=None,
+            turb_idx=1,
+        )
+        # This is only for testing (known that only maximal 3 turbines)
+        if n_turbines > 2:
+            interface.set_command(
+                yaw=None,
+                ipc=None,
+                torque=None,
+                turb_idx=2,
+            )
 
 # ================================= Save Results =================================
 if save_results:

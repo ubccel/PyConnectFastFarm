@@ -57,6 +57,10 @@ n_turbines = interface.num_turbines
 max_iter   = interface.max_iter
 
 for step in range(max_iter):
+    done = interface.step()
+    power = interface.get_measure("power", turb_idx=0).item()   # W
+    if done:
+        break
     for i in range(n_turbines):
         interface.set_command(
             yaw    = 10.0,  # deg — or pass None to leave to DISCON
@@ -65,11 +69,9 @@ for step in range(max_iter):
             ipc    = None,
             turb_idx = i,
         )
-    done = interface.step()
-    power = interface.get_measure("power", turb_idx=0).item()   # W
-    if done:
-        break
 ```
+
+**Loop order — step first**: always call `step()` before `get_measure()`. `current_measures` is only populated inside `step()`, so reading before stepping returns the uninitialized t=0 buffer (NaN/garbage). Set commands after reading — they are buffered and consumed by the *next* `step()` call.
 
 **Key rule — `None` guards**: always pass `None` for channels you are not controlling. Passing `0.0` activates the override flag with a zero setpoint and overrides DISCON (torque or pitch collapses to zero).
 
