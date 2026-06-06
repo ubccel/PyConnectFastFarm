@@ -1,4 +1,5 @@
-# Run with: mpiexec -n 1 python run_test_fullIO.py
+# Run with:     $env:OMP_NUM_THREADS = 16 (optional for acceleration)
+#               mpiexec -n 1 python run_test_fullIO.py
 '''
     Test the full IO (SC_DLL_Full variant, NumCtrl2SC=69) in ffconnect
     1) Ensure all 69 IO variables are available and sensible
