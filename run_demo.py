@@ -35,7 +35,7 @@ save_results       = True
 save_figure_option = True    # True → save PNGs to results/<run_name>/  |  False → interactive plt.show()
 IO_check           = True
 RESULTS_DIR        = "results"
-result_file_name   = "demo_2x2_ctrl_limited.pkl"
+result_file_name   = "demo_2x2_ctrl_checksign.pkl"
 print_result = False
 # --- User-defined paths ---
 FFexePath = "D:\\2_PhD_UBC\\Code\\FASTv355\\FAST.Farm_x64_OMP_v355.exe"
@@ -233,7 +233,7 @@ for t in range(max_iter):
         rdz_t_deg  = np.degrees(interface.get_measure("platform_rdz", turb_idx=turb).item())   # rad → deg
 
         Kp = 1.0
-        error_t       = (wind_dir_t - 270) - (yaw_t_deg - rdz_t_deg)                            # deg
+        error_t       = (wind_dir_t - 270) - (yaw_t_deg)                                        # deg wind_dir_t - 270) - (yaw_t_deg - rdz_t_deg) 
         yaw_command_t = yaw_t_deg + Kp * error_t                                                # P(K=1) → wind_dir_t - rdz_t_deg
 
         if t + 1 == activate_step:
