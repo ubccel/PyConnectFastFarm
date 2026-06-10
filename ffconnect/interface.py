@@ -531,9 +531,9 @@ class FastFarmInterface(MPI_Interface):
         "platform_tdx":          21,  # m
         "platform_tdy":          22,  # m
         "platform_tdz":          23,  # m
-        "platform_rdx":          24,  # deg
-        "platform_rdy":          25,  # deg
-        "platform_rdz":          26,  # deg
+        "platform_rdx":          24,  # rad  (DISCON to_SC[25]=avrSWAP(1004), rad)
+        "platform_rdy":          25,  # rad  (DISCON to_SC[26]=avrSWAP(1005), rad)
+        "platform_rdz":          26,  # rad  (DISCON to_SC[27]=avrSWAP(1006), rad)
         # --- New in Full variant (indices 27-68) ---
         "shaft_power":           27,  # W        avrSWAP(14)
         "hub_my_rotating":       28,  # N-m      LSSTipMya  avrSWAP(73)

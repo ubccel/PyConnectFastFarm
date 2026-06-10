@@ -12,4 +12,9 @@ CLAUDE.md
 __simul__/
 *.egg-info/
 __pycache__/
+demo/
+*.png
+*.pkl
+*.csv
 
+*.vtk
