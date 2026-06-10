@@ -7,12 +7,35 @@ import numpy as np
 import matplotlib.pyplot as plt
 from ffconnect.interface import FastFarmInterface
 
+
+class RateLimiter:
+    """Causal rate limiter: clamps how fast a commanded value may change per step."""
+
+    def __init__(self, max_rate, dt):
+        self.max_step = abs(max_rate) * dt
+        self.value = None
+
+    def reset(self, value=None):
+        self.value = value
+
+    def step(self, target):
+        if self.value is None:
+            self.value = target
+        else:
+            self.value += np.clip(target - self.value, -self.max_step, self.max_step)
+        return self.value
+
+
+# Yaw command rate limit (deg/s) — matches the saturation value SC_DLL_Full computes
+# but never applies (from_SCglob(1) = 0.005235 rad/s ~= 0.3 deg/s).
+YAW_RATE_LIMIT_DEG_S = 0.3
+
 # ================================= Initialization =================================
 save_results       = True
 save_figure_option = True    # True → save PNGs to results/<run_name>/  |  False → interactive plt.show()
 IO_check           = True
 RESULTS_DIR        = "results"
-result_file_name   = "demo_2x2_ctrl.pkl"
+result_file_name   = "demo_2x2_ctrl_limited.pkl"
 print_result = False
 # --- User-defined paths ---
 FFexePath = "D:\\2_PhD_UBC\\Code\\FASTv355\\FAST.Farm_x64_OMP_v355.exe"
@@ -38,6 +61,8 @@ activate_step = int(activate_time / dt)
 yaw_schedule[activate_step:] = 10.0
 ipc_schedule[activate_step:] = [1.0, 2.0, 3.0]
 torque_schedule[activate_step:] = 35e3
+
+yaw_limiters = [RateLimiter(YAW_RATE_LIMIT_DEG_S, dt) for _ in range(n_turbines)]
 
 # --- Simulation loop ---
 results = []
@@ -211,12 +236,17 @@ for t in range(max_iter):
         error_t       = (wind_dir_t - 270) - (yaw_t_deg - rdz_t_deg)                            # deg
         yaw_command_t = yaw_t_deg + Kp * error_t                                                # P(K=1) → wind_dir_t - rdz_t_deg
 
-        step_result[f"yaw_cmd_T{turb}"]   = yaw_command_t
-        step_result[f"yaw_error_T{turb}"] = error_t
+        if t + 1 == activate_step:
+            yaw_limiters[turb].reset(yaw_t_deg)
+        yaw_cmd_limited = yaw_limiters[turb].step(yaw_command_t)
+
+        step_result[f"yaw_cmd_T{turb}"]    = yaw_cmd_limited
+        step_result[f"yaw_target_T{turb}"] = yaw_command_t
+        step_result[f"yaw_error_T{turb}"]  = error_t
 
         if t + 1 >= activate_step:
             interface.set_command(
-                yaw=yaw_command_t, 
+                yaw=yaw_cmd_limited,
                 ipc=None,
                 torque=None,
                 turb_idx=turb,
