@@ -4,7 +4,15 @@ import os
 
 import matplotlib.pyplot as plt
 
-plt.rcParams.update({"font.size": 14})
+plt.rcParams.update({
+    "font.size": 14,
+    "axes.titlesize": 14,
+    "axes.labelsize": 14,
+    "xtick.labelsize": 14,
+    "ytick.labelsize": 14,
+    "legend.fontsize": 14,
+    "figure.titlesize": 14,
+})
 
 RESULTS_DIR = os.path.dirname(os.path.abspath(__file__))
 
