@@ -34,20 +34,17 @@ fig1.tight_layout()
 fig1.savefig(os.path.join(RESULTS_DIR, "runtime_vs_simtime.png"))
 
 # --- Figure 2: runtime vs. farm size (same simulation length) ---
-ff_rows = load_csv("ff_timing_results.csv")
-ffconnect_rows = load_csv("ffconnect_timing_results.csv")
-ff_rows.sort(key=lambda r: int(r["turbines"]))
-ffconnect_rows.sort(key=lambda r: int(r["turbines"]))
+farm_rows = load_csv("turbine_scaling_timing.csv")
+farm_rows.sort(key=lambda r: int(r["turbines"]))
 
-ff_turbines = [int(r["turbines"]) for r in ff_rows]
-ff_farm_time = [float(r["elapsed_seconds"]) for r in ff_rows]
-ffconnect_turbines = [int(r["turbines"]) for r in ffconnect_rows]
-ffconnect_farm_time = [float(r["elapsed_seconds"]) for r in ffconnect_rows]
+turbines = [int(r["turbines"]) for r in farm_rows]
+ff_farm_time = [float(r["ff_time_s"]) for r in farm_rows]
+ffconnect_farm_time = [float(r["ffconnect_time_s"]) for r in farm_rows]
 
 fig2, ax2 = plt.subplots(figsize=(12, 6))
 # fig2.suptitle("Runtime vs. Farm Size", fontsize=13)
-ax2.plot(ff_turbines, ff_farm_time, marker="o", label="FAST.Farm")
-ax2.plot(ffconnect_turbines, ffconnect_farm_time, marker="o", linestyle="--", label="ffconnect")
+ax2.plot(turbines, ff_farm_time, marker="o", label="FAST.Farm")
+ax2.plot(turbines, ffconnect_farm_time, marker="o", linestyle="--", label="ffconnect")
 ax2.set_xlabel("Number of turbines")
 ax2.set_ylabel("Runtime (s)")
 ax2.legend()

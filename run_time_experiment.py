@@ -7,6 +7,7 @@ Results are saved to results/time_experiment.csv.
 """
 
 import csv
+import os
 import subprocess
 import time
 from pathlib import Path
@@ -51,6 +52,33 @@ def cleanup_temp(path: Path) -> None:
             pass
 
 
+def _is_released(path: Path) -> bool:
+    if not path.exists():
+        return True
+    try:
+        os.replace(path, path)
+        return True
+    except OSError:
+        return False
+
+
+def wait_for_file_release(paths, timeout: float = 120.0, poll_interval: float = 0.5) -> None:
+    """Block until none of `paths` are still held open by another process.
+
+    Used after the ffconnect simulation loop ends, since the spawned
+    FAST.Farm process may still be flushing/closing output files after
+    MPI_COMM_DISCONNECT returns. Falls through after `timeout` with a
+    warning if files remain locked (cleanup_temp will then just skip them,
+    same as today).
+    """
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        if all(_is_released(p) for p in paths):
+            return
+        time.sleep(poll_interval)
+    print(f"  Warning: some output files still locked after {timeout:.0f}s")
+
+
 def run_ff(tmax: int) -> float:
     """Run direct FAST.Farm for the given TMax; return wall-clock seconds."""
     tmp = make_temp_fstf(FF_FSTF, tmax, f"_tmp_ff_{tmax}")
@@ -75,6 +103,11 @@ def run_ffconnect(tmax: int) -> float:
         # All channels passed as None — no control override
         for i in range(interface.num_turbines):
             interface.set_command(yaw=None, ipc=None, torque=None, turb_idx=i)
+    # interface.step() returning True means MPI_COMM_DISCONNECT/FINALIZE
+    # already happened on the FAST.Farm side, but the spawned process may
+    # still be writing/closing its output files. Wait for that to finish
+    # so the timer captures the same "full run" as run_ff's subprocess.run.
+    wait_for_file_release(list(DEMO_DIR.glob(f"{tmp.stem}*")))
     elapsed = time.perf_counter() - t0
     cleanup_temp(tmp)
     return elapsed
