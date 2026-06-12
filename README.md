@@ -140,9 +140,9 @@ This package supports only the **Full variant** (`SC_DLL_Full.dll`, `NumCtrl2SC 
 | `"platform_tdx"` | m | 21 | Platform surge (X) displacement |
 | `"platform_tdy"` | m | 22 | Platform sway (Y) displacement |
 | `"platform_tdz"` | m | 23 | Platform heave (Z) displacement |
-| `"platform_rdx"` | **deg** | 24 | Platform roll |
-| `"platform_rdy"` | **deg** | 25 | Platform pitch |
-| `"platform_rdz"` | **deg** | 26 | Platform yaw |
+| `"platform_rdx"` | **rad** | 24 | Platform roll |
+| `"platform_rdy"` | **rad** | 25 | Platform pitch |
+| `"platform_rdz"` | **rad** | 26 | Platform yaw |
 
 ### Indices 27–68 (additional signals)
 
@@ -190,7 +190,7 @@ This package supports only the **Full variant** (`SC_DLL_Full.dll`, `NumCtrl2SC 
 
 **Unit notes**
 - `yaw`, `pitch`, `pitch_blade2`, `pitch_blade3`, `azimuth` — **radians**. Use `np.degrees(val.item())` for display.
-- `platform_rdx/rdy/rdz` — **degrees**. These pass through directly from ElastoDyn output; do NOT call `np.degrees()` on them.
+- `platform_rdx/rdy/rdz` — **radians**. These come through the DISCON super-controller path (`to_SC(25-27) = avrSWAP(1004-1006)`, radians), NOT ElastoDyn's degree-valued output file. Use `np.degrees(val.item())` for display, exactly as the run scripts do.
 - `wind_direction` — **degrees**. Auto-converted by the interface.
 
 ---
