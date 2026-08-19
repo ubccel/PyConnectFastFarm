@@ -3,15 +3,15 @@ import csv
 import os
 
 import matplotlib.pyplot as plt
-
+size = 20
 plt.rcParams.update({
-    "font.size": 14,
-    "axes.titlesize": 14,
-    "axes.labelsize": 14,
-    "xtick.labelsize": 14,
-    "ytick.labelsize": 14,
-    "legend.fontsize": 14,
-    "figure.titlesize": 14,
+    "font.size": size,
+    "axes.titlesize": size,
+    "axes.labelsize": size,
+    "xtick.labelsize": size,
+    "ytick.labelsize": size,
+    "legend.fontsize": size,
+    "figure.titlesize": size,
 })
 
 RESULTS_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -32,8 +32,8 @@ ffconnect_sim_time = [float(r["ffconnect_time_s"]) for r in sim_rows]
 
 fig1, ax1 = plt.subplots(figsize=(12, 6))
 # fig1.suptitle("Runtime vs. Simulation Length", fontsize=13)
-ax1.plot(tmax, ff_sim_time, marker="o", label="FAST.Farm")
-ax1.plot(tmax, ffconnect_sim_time, marker="o", linestyle="--", label="ffconnect")
+ax1.plot(tmax, ff_sim_time, marker="o", linewidth=3, label="FAST.Farm")
+ax1.plot(tmax, ffconnect_sim_time, marker="o", linestyle="--", linewidth=3, label="ffconnect")
 ax1.set_xlabel("Simulation length, Tmax (s)")
 ax1.set_ylabel("Runtime (s)")
 ax1.legend()
@@ -51,8 +51,8 @@ ffconnect_farm_time = [float(r["ffconnect_time_s"]) for r in farm_rows]
 
 fig2, ax2 = plt.subplots(figsize=(12, 6))
 # fig2.suptitle("Runtime vs. Farm Size", fontsize=13)
-ax2.plot(turbines, ff_farm_time, marker="o", label="FAST.Farm")
-ax2.plot(turbines, ffconnect_farm_time, marker="o", linestyle="--", label="ffconnect")
+ax2.plot(turbines, ff_farm_time, marker="o", linewidth=3, label="FAST.Farm")
+ax2.plot(turbines, ffconnect_farm_time, marker="o", linestyle="--", linewidth=3, label="ffconnect")
 ax2.set_xlabel("Number of turbines")
 ax2.set_ylabel("Runtime (s)")
 ax2.legend()

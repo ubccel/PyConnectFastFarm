@@ -1,15 +1,34 @@
 # FAST.Farm binaries - large executables, not tracked in git
 *.exe
 
-# Claude Code local settings
+# Generative AI / coding-assistant configs (local-only, keep out of public repo)
+AGENTS.md
+CLAUDE.md
+CLAUDE.local.md
 .claude/
-CLAUDE.md 
+.claude.json
+.cursor/
+.cursorrules
+.opencode/
+opencode.json
+opencode.jsonc
+.windsurf/
+.windsurfrules
+.gemini/
+GEMINI.md
+.roo/
+.roomodes
+.mcp.json
+.github/copilot-instructions.md
+.aider*
+es_*
 
 # VS Code setting
 .vscode
 
 # Simulation result
 __simul__/
+results/
 *.egg-info/
 __pycache__/
 demo/

@@ -3,7 +3,7 @@ FAST.Farm input file, 4 turbines in 2-downstream x 2-lateral configuration, with
 --- SIMULATION CONTROL ---
 True               Echo               - Echo input data to <RootName>.ech? (flag)
 FATAL              AbortLevel         - Error level when simulation should abort (string) {"WARNING", "SEVERE", "FATAL"}
-120.0               TMax               - Total run time (s) [>=0.0]
+300.0               TMax               - Total run time (s) [>=0.0]
 True              UseSC              - Use a super controller? (flag)
 2                  Mod_AmbWind        - Ambient wind model (-) (switch) {1: high-fidelity precursor in VTK format, 2: one InflowWind module, 3: multiple instances of InflowWind module}
 2                  Mod_WaveField      - Wave field handling (-) (switch) {1: use individual HydroDyn inputs without adjustment, 2: adjust wave phases based on turbine offsets from farm origin}
