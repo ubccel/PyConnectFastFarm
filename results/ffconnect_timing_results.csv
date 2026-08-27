@@ -1,7 +1,0 @@
-case,turbines,elapsed_seconds,status
-ffconnect.fstf,2,42.386,OK
-ffconnect2x2.fstf,4,94.054,OK
-ffconnect3x2.fstf,6,159.685,OK
-ffconnect4x2.fstf,8,234.99,OK
-ffconnect5x2.fstf,10,454.985,OK
-ffconnect6x2.fstf,12,717.858,OK

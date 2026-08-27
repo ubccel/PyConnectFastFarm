@@ -1,7 +1,0 @@
-case,turbines,elapsed_seconds,status
-ff.fstf,2,40.614,OK
-ff2x2.fstf,4,86.337,OK
-ff3x2.fstf,6,164.609,OK
-ff4x2.fstf,8,232.672,OK
-ff5x2.fstf,10,417.641,OK
-ff6x2.fstf,12,715.143,OK

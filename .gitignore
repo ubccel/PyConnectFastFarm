@@ -26,6 +26,14 @@ es_*
 # VS Code setting
 .vscode
 
+# Timing / experiment scripts (local-only)
+_omp_worker_ffconnect.py
+run_ff_timing.py
+run_ffconnect_timing.py
+run_omp_threads_experiment.py
+run_time_experiment.py
+run_time_experiment2.py
+
 # Simulation result
 __simul__/
 results/
